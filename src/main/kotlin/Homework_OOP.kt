@@ -7,10 +7,10 @@ data class Post(
     val fromId: Int = 2,
     val createdBy: Int = 3,
     val likesCount: Int = 0,
-    val commentsCount: Int = 0,
     val postType: String = "post",
     val canDelete: Boolean = true,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val comments: Comments = Comments() // Now includes comment count
 )
 
 data class Comments(
@@ -27,7 +27,7 @@ object WallService {
     private var lastId = 0
 
     fun addPost(post: Post): Post {
-        posts += post.copy("Changed",++lastId, commentsCount = post.commentsCount)
+        posts += post.copy(text = "Changed", id = ++lastId)
         return posts.last()
     }
 
@@ -40,14 +40,15 @@ object WallService {
     }
 
     fun updatePost(newPost: Post): Boolean {
-        for((index, existingPost) in posts.withIndex()) {
+        for ((index, existingPost) in posts.withIndex()) {
             if (existingPost.id == newPost.id) {
-                posts[index] = newPost.copy(commentsCount = existingPost.commentsCount)
+                // Use newPost.comments.count for updating
+                posts[index] = newPost.copy(comments = existingPost.comments)
                 return true
             }
         }
         return false
-            }
+    }
 
     fun clear() {
         posts = emptyArray()
@@ -56,7 +57,7 @@ object WallService {
 }
 
 fun main() {
-    WallService.addPost(Post("Hi", commentsCount = 30 ))
+    WallService.addPost(Post("Hi", comments = Comments(count = 30)))
     WallService.addPost(Post("wow"))
     WallService.printPost()
     WallService.updatePost(Post(id = 1, text = "New text"))
