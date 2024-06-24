@@ -10,7 +10,7 @@ data class Post(
     val postType: String = "post",
     val canDelete: Boolean = true,
     val isFavorite: Boolean = false,
-    val comments: Comments = Comments() // Now includes comment count
+    val comments: Comments = Comments()
 )
 
 data class Comments(
@@ -42,7 +42,6 @@ object WallService {
     fun updatePost(newPost: Post): Boolean {
         for ((index, existingPost) in posts.withIndex()) {
             if (existingPost.id == newPost.id) {
-                // Use newPost.comments.count for updating
                 posts[index] = newPost.copy(comments = existingPost.comments)
                 return true
             }
